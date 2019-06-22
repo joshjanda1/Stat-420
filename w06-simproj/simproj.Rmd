@@ -1,0 +1,564 @@
+---
+title: "Week 4 - Homework"
+author: "STAT 420, Summer 2019, Janda - joshlj2"
+date: ''
+output:
+  html_document: 
+    toc: yes
+  pdf_document: default
+urlcolor: cyan
+---
+
+## Simulation 1 - Significance of Regression
+
+**Introduction**
+</br>
+The reasoning behind this simulation is to show how the significance of regression test is useful. This test allows us to test whether our regression model holds any significant explanatory power. Overall, the test allows us to see if there is a linear relationship between any of the variables and the variable we are predicting. 
+</br></br>
+In this exact simulation we will be utilizing the significance of regression test to test between a significant model and a non-significant model. The significant model will consist of four parameters, an intercept which will be equal to three and three variables (so three coefficients). Each coefficient will be equal to one. Our insignificant model will consist of one parameter, an intercept equal to three. Our insignificant model removes the three variables and states that their true coefficients are actually equal to zero. We will be performing the significance of regression test on each model, in each simulation. 
+</br></br>
+I will be simulating a sample size of n=25 with three levels of sigma for the error term. I will then simulate 2,500 regression models for each sample with each level of sigma. This will equal to a total of 15,000 simulations of y. Each simulation I will conduct the significance of regression test for each model.</br>
+
+**Methods**
+```{r}
+library(readr)
+study1 = read_csv("study_1.csv")
+set.seed(19981127)
+#sigma level 1, sigma = 1
+sim1_sigma1 = data.frame(#initialize dataframe for level 1 sigma
+                          full_ftest = rep(0, 2500),
+                          full_pval = rep(0, 2500),
+                          full_rsq = rep(0, 2500),
+                          red_ftest = rep(0, 2500),
+                          red_pval = rep(0, 2500),
+                          red_rsq = rep(0, 2500)
+)
+
+for (i in 1:2500) {#sigma level 1
+  epsilon = rnorm(25, mean = 0, sd = 1) #generate error terms
+  study1$y = 3 + 1*study1$x1 + 1*study1$x2 + 1*study1$x3 + epsilon #generate y values for full model
+  full_mod = lm(y ~ x1 + x2 + x3, data=study1) #full (significant) model
+  sim1_sigma1$full_ftest[i] = summary(full_mod)$fstatistic[[1]]
+  sim1_sigma1$full_pval[i] = pf(summary(full_mod)$fstatistic[[1]], 3, 21, lower.tail=FALSE)
+  sim1_sigma1$full_rsq[i] = summary(full_mod)$r.squared
+  
+  study1$y = 3 + epsilon
+  red_mod = lm(y ~ x1 + x2 + x3, data=study1)
+  sim1_sigma1$red_ftest[i] = summary(red_mod)$fstatistic[[1]]
+  sim1_sigma1$red_pval[i] = pf(summary(red_mod)$fstatistic[[1]], 3, 21, lower.tail=FALSE)
+  sim1_sigma1$red_rsq[i] = summary(red_mod)$r.squared
+  
+}
+
+sim1_sigma2 = data.frame(#initialize dataframe for level 2 sigma
+                          full_ftest = rep(0, 2500),
+                          full_pval = rep(0, 2500),
+                          full_rsq = rep(0, 2500),
+                          red_ftest = rep(0, 2500),
+                          red_pval = rep(0, 2500),
+                          red_rsq = rep(0, 2500)
+)
+
+for (i in 1:2500) {#sigma level 2
+  epsilon = rnorm(25, mean = 0, sd = 5) #generate error terms
+  study1$y = 3 + 1*study1$x1 + 1*study1$x2 + 1*study1$x3 + epsilon #generate y values for full model
+  full_mod = lm(y ~ x1 + x2 + x3, data=study1) #full (significant) model
+  sim1_sigma2$full_ftest[i] = summary(full_mod)$fstatistic[[1]]
+  sim1_sigma2$full_pval[i] = pf(summary(full_mod)$fstatistic[[1]], 3, 21, lower.tail=FALSE)
+  sim1_sigma2$full_rsq[i] = summary(full_mod)$r.squared
+  
+  study1$y = 3 + epsilon
+  red_mod = lm(y ~ x1 + x2 + x3, data=study1)
+  sim1_sigma2$red_ftest[i] = summary(red_mod)$fstatistic[[1]]
+  sim1_sigma2$red_pval[i] = pf(summary(red_mod)$fstatistic[[1]], 3, 21, lower.tail=FALSE)
+  sim1_sigma2$red_rsq[i] = summary(red_mod)$r.squared
+  
+}
+
+sim1_sigma3 = data.frame(#initialize dataframe for level 3 sigma
+                          full_ftest = rep(0, 2500),
+                          full_pval = rep(0, 2500),
+                          full_rsq = rep(0, 2500),
+                          red_ftest = rep(0, 2500),
+                          red_pval = rep(0, 2500),
+                          red_rsq = rep(0, 2500)
+)
+
+for (i in 1:2500) {#sigma level 3
+  epsilon = rnorm(25, mean = 0, sd = 10) #generate error terms
+  study1$y = 3 + 1*study1$x1 + 1*study1$x2 + 1*study1$x3 + epsilon #generate y values for full model
+  full_mod = lm(y ~ x1 + x2 + x3, data=study1) #full (significant) model
+  sim1_sigma3$full_ftest[i] = summary(full_mod)$fstatistic[[1]]
+  sim1_sigma3$full_pval[i] = pf(summary(full_mod)$fstatistic[[1]], 3, 21, lower.tail=FALSE)
+  sim1_sigma3$full_rsq[i] = summary(full_mod)$r.squared
+  
+  study1$y = 3 + epsilon
+  red_mod = lm(y ~ x1 + x2 + x3, data=study1)
+  sim1_sigma3$red_ftest[i] = summary(red_mod)$fstatistic[[1]]
+  sim1_sigma3$red_pval[i] = pf(summary(red_mod)$fstatistic[[1]], 3, 21, lower.tail=FALSE)
+  sim1_sigma3$red_rsq[i] = summary(red_mod)$r.squared
+  
+}
+```
+</br>
+</br>
+</br>
+**Graphical Results**
+</br>
+**Figure 1 - $\sigma$ = 1**
+</br>
+```{r echo=FALSE}
+##BEGIN PLOTTING CODE
+
+##Sigma = 1##
+
+#F Statistic Distributions#
+
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma1$full_ftest,
+      main = 'Significant F Stat - Sigma = 1',
+      border = 'grey',
+      xlab = 'Significant F Stat',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma1$full_ftest
+curve(df(x, 3, 2496), col = 'blue', add = TRUE, lwd = 3)
+
+hist(
+      sim1_sigma1$red_ftest,
+      main = 'Insignificant F Stat - Sigma = 1',
+      border = 'grey',
+      xlab = 'Insignificant F Stat',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma1$red_ftest
+curve(df(x, 3, 2496), col = 'blue', add = TRUE, lwd = 3)
+
+#P-Value Distributions#
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma1$full_pval,
+      main = 'Significant P-Value - Sigma = 1',
+      border = 'grey',
+      xlab = 'Significant P-Value',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma1$full_pval
+curve(dunif(x), col='blue', add=TRUE, lwd=3)
+hist(
+      sim1_sigma1$red_pval,
+      main = 'Insignificant P-Value - Sigma = 1',
+      border = 'grey',
+      xlab = 'Insignificant P-Value',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma1$red_pval
+curve(dunif(x), col='blue', add=TRUE, lwd=3)
+#R-Squared Distributions#
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma1$full_rsq,
+      main = 'Significant R^2 - Sigma = 1',
+      border = 'grey',
+      xlab = 'Significant R^2',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma1$full_rsq
+curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
+hist(
+      sim1_sigma1$red_rsq,
+      main = 'Insignificant R^2 - Sigma = 1',
+      border = 'grey',
+      xlab = 'Insignificant R^2',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma1$red_rsq
+curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
+```
+</br>
+**Figure 2 - $\sigma$ = 5**
+</br>
+``` {r echo = FALSE}
+##Sigma = 5##
+
+#F Statistic Distributions#
+
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma2$full_ftest,
+      main = 'Significant F Stat - Sigma = 5',
+      border = 'grey',
+      xlab = 'Significant F Stat',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma2$full_ftest
+curve(df(x, 3, 2496), col = 'blue', add = TRUE, lwd = 3)
+
+hist(
+      sim1_sigma2$red_ftest,
+      main = 'Insignificant F Stat - Sigma = 5',
+      border = 'grey',
+      xlab = 'Insignificant F Stat',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma2$red_ftest
+curve(df(x, 3, 2496), col = 'blue', add = TRUE, lwd = 3)
+
+#P-Value Distributions#
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma2$full_pval,
+      main = 'Significant P-Value - Sigma = 5',
+      border = 'grey',
+      xlab = 'Significant P-Value',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma2$full_pval
+curve(dunif(x), col='blue', add=TRUE, lwd=3)
+hist(
+      sim1_sigma2$red_pval,
+      main = 'Insignificant P-Value - Sigma = 5',
+      border = 'grey',
+      xlab = 'Insignificant P-Value',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma2$red_pval
+curve(dunif(x), col='blue', add=TRUE, lwd=3)
+#R-Squared Distributions#
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma2$full_rsq,
+      main = 'Significant R^2 - Sigma = 5',
+      border = 'grey',
+      xlab = 'Significant R^2',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma2$full_rsq
+curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
+hist(
+      sim1_sigma2$red_rsq,
+      main = 'Insignificant R^2 - Sigma = 5',
+      border = 'grey',
+      xlab = 'Insignificant R^2',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma2$red_rsq
+curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
+```
+</br>
+**Figure 3 - $\sigma$ = 10**
+</br>
+``` {r echo = FALSE}
+##Sigma = 10##
+
+#F Statistic Distributions#
+
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma3$full_ftest,
+      main = 'Significant F Stat - Sigma = 10',
+      border = 'grey',
+      xlab = 'Significant F Stat',
+      prob = TRUE,
+      breaks =  40
+     )
+x = sim1_sigma3$full_ftest
+curve(df(x, 3, 2496), col = 'blue', add = TRUE, lwd = 3)
+
+hist(
+      sim1_sigma3$red_ftest,
+      main = 'Insignificant F Stat - Sigma = 10',
+      border = 'grey',
+      xlab = 'Insignificant F Stat',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma3$red_ftest
+curve(df(x, 3, 2496), col = 'blue', add = TRUE, lwd = 3)
+
+#P-Value Distributions#
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma3$full_pval,
+      main = 'Significant P-Value - Sigma = 10',
+      border = 'grey',
+      xlab = 'Significant P-Value',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma3$full_pval
+curve(dunif(x), col='blue', add=TRUE, lwd=3)
+hist(
+      sim1_sigma3$red_pval,
+      main = 'Insignificant P-Value - Sigma = 10',
+      border = 'grey',
+      xlab = 'Insignificant P-Value',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma3$red_pval
+curve(dunif(x), col='blue', add=TRUE, lwd=3)
+#R-Squared Distributions#
+par(mfrow = c(1, 2))
+hist(
+      sim1_sigma3$full_rsq,
+      main = 'Significant R^2 - Sigma = 10',
+      border = 'grey',
+      xlab = 'Significant R-Squared',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma3$full_rsq
+curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
+hist(
+      sim1_sigma3$red_rsq,
+      main = 'Insignificant R^2 - Sigma = 10',
+      border = 'grey',
+      xlab = 'Insignificant R^2',
+      prob = TRUE,
+      breaks = 40
+     )
+x = sim1_sigma3$red_rsq
+curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
+
+
+
+```
+</br>
+**Discussion**
+</br>
+</br>
+**True Distributions**
+</br>
+We do know the true distributions of these values. It also should be noted that the insignificant model signifies the model under the true null hypothesis in the significance of regression test. The insignificant model should follow the true distribution of each statistic under the null hypothesis. This can be seen in Figures 1, 2, and 3.
+</br>
+</br>
+*F*
+For the F Statistic in each simulated level of sigma, and each model (significant and insignificant), we know that the F test Statistic follows an F distribution with numerator degrees of freedom equal to three and denominator degrees of freedom equal to 2496 for the null hypothesis. These degrees of freedom come from there being three variables in the model, and 2500 observations in each simulation. We then subtract the four parameters from 2500 to get 2496.
+</br>
+</br>
+The graphs follow this true distribution fairly well. The exception is the Significant Model F-Statistics when sigma=1. This is due to the model being very significant, therefore having a large F-Statistic for the significance of regression test. Since this model heavily rejects the null hypothesis of the model being insignificant, F Statistics will not follow an F-Distribution. Also, since sigma=1 there is not very much disturbance in the model making it highly predictable. Once $\sigma$ increases, the significant model F-Statistics converge to the true F Distribution (due to the model having more error, and therefore more likely to fail to reject null hypothesis of significance test). The insignificant models follow the F-Distribution accurately since they represent the model under the true null hypothesis of the significance of regression test.
+</br>
+</br>
+*P-Value*
+Looking at the histograms of the simulated P-Values for each model (significant and insignficant), for each level of $\sigma$ we can see that the P-Values tend to follow a uniform distribution. Under the null hypothesis that the model is insignificant, P-Values will follow a uniform distributon. This is due to P-Values being a continuous variable and having an equal chance of appearing under the null hypothesis. It should be noted that the insignificant model P-Values for each level of sigma heavily follow a uniform distribution. For the significant models, as sigma increases the distribution of the simulated p-values tend towards a uniform distribution. This is due to the disturbance term of the model increasing, therefore making the model less predictable. When the model is less predictable, the model is more likely to be insignificant as there will be a larger sum of squared residuals.
+</br>
+</br>
+*R-Squared*
+</br>
+Under the null hypothesis of the simulated model being insignificant, $R^2$ follows a beta distribution with the first shape being the number of variables divided by two, and the second shape being the number of observations minus the number of parameters divided by two. The histograms of the insignificant models follow the beta distribution, since the insignificant model is the null hypothesis. As $\sigma$ increases, the significant model starts to have less explanatory power ($R^2$ decreases), so the distribution shifts towards the distribution under the true null hypothesis which is the beta distribution. This can be seen in the histograms.
+</br>
+</br>
+**How are $R^2$ and $\sigma$ related?**
+</br>
+$R^2$ and $\sigma$ are directly related to one another. $\sigma$ is the standard deviation of the disturbance term in the model, which are the errors in the model. $R^2$ measures the total variation in the dependent variable (y) explained by the model. 
+</br>
+</br>
+As the error terms in the model increase, the model becomes less predictable. This is shown through the graphs above. If you look at the histograms of the significant model F-Statistic for each level of sigma, as $\sigma$ increases the significant model F-Statistic distribution tends toward a true F-Distribution with mean 1. This means that as $\sigma$ increases, the model becomes less significant and therefore less predictable. 
+</br>
+</br>
+Also, if you look at the histogram of the R-Squared, as $\sigma$ increases in each model the mean of the $R^2$ values gets closer to zero.
+</br>
+</br>
+So as $\sigma$ increases, the model becomes less significant and holds less explanatory power, therefore decreasing $R^2$. So there is a negative relationship between sigma and R-Squared.
+</br>
+</br>
+</br>
+## Simulation 2 - Using RMSE for Selection
+**Introduction**
+</br>
+RMSE, or root mean squared error, is a popular model selection criterion used by many. The idea behind the root mean square error is in the name. You sum up all of the squarred errors in the model, take the mean of the squared errors, and take the square root of this value. This value can be seen as the average distance each actual point is from the fitted regression line. It is used as a popular selection criterion as it successfully selects the model with the lowest average distance of actual points from the fitted regression line.
+</br>
+</br>
+However, there are downfalls for using this method of selection. This selection criterion will not always select the correct model, since sometimes we can see a model that overfits data be selected and lead us to a model that is not good at predictions. We can also select the model that randomly selects training data and creates a model that fits that data well, but then does not fit the test data well at all. However, on average we should see that the RMSE chooses the correct model. It is important that on average we see that the RMSE chooses the correct model, as it cannot be expected that this selection criterion will be perfect everytime.
+</br>
+</br>
+In this simulation specifically, I will be simulating the following model:
+</br>
+</br>
+$Y_i$ = 5$x_{i1}$ + -4$x_{i2}$ + 1.6$x_{i3}$ + -1.1$x_{i4}$ + .7$x_{i5}$ + .3$x_{i6}$ + $\epsilon_i$
+Where $\epsilon_i$ ~ $N(0, \sigma^2)$ with three levels of $\sigma$: 1, 2, 4
+</br>
+</br>
+For each level of $\sigma$, I will simulate 500 values of $Y_i$ 1000 times, and will split each simulation into random train and test sets of size 250 each. For each simulation, I will fit nine different models. We will see that on average, RMSE chooses the correct model I have given above.
+</br>
+</br>
+**Methods**
+```{r}
+library(readr)
+sim2_data = read_csv("study_2.csv")
+set.seed(19981128)#set seed for reproducable results
+sigmas = c(1, 2, 4)#define sigma values for each simulation
+n = 500 #sample size
+
+rmse = function(actual, fitted) {
+  sqrt(sum((actual - fitted)^2) / length((actual)))
+}
+rmse_sig1 = data.frame(
+                    mod1_trn = rep(0, 1000),
+                    mod1_tst = rep(0, 1000),
+                    mod2_trn = rep(0, 1000),
+                    mod2_tst = rep(0, 1000),
+                    mod3_trn = rep(0, 1000),
+                    mod3_tst = rep(0, 1000),
+                    mod4_trn = rep(0, 1000),
+                    mod4_tst = rep(0, 1000),
+                    mod5_trn = rep(0, 1000),
+                    mod5_tst = rep(0, 1000),
+                    mod6_trn = rep(0, 1000),
+                    mod6_tst = rep(0, 1000),
+                    mod7_trn = rep(0, 1000),
+                    mod7_tst = rep(0, 1000),
+                    mod8_trn = rep(0, 1000),
+                    mod8_tst = rep(0, 1000),
+                    mod9_trn = rep(0, 1000),
+                    mod9_tst = rep(0, 1000)
+                    )
+rmse_sig2 = data.frame(
+                    mod1_trn = rep(0, 1000),
+                    mod1_tst = rep(0, 1000),
+                    mod2_trn = rep(0, 1000),
+                    mod2_tst = rep(0, 1000),
+                    mod3_trn = rep(0, 1000),
+                    mod3_tst = rep(0, 1000),
+                    mod4_trn = rep(0, 1000),
+                    mod4_tst = rep(0, 1000),
+                    mod5_trn = rep(0, 1000),
+                    mod5_tst = rep(0, 1000),
+                    mod6_trn = rep(0, 1000),
+                    mod6_tst = rep(0, 1000),
+                    mod7_trn = rep(0, 1000),
+                    mod7_tst = rep(0, 1000),
+                    mod8_trn = rep(0, 1000),
+                    mod8_tst = rep(0, 1000),
+                    mod9_trn = rep(0, 1000),
+                    mod9_tst = rep(0, 1000)
+                    )
+rmse_sig3 = data.frame(
+                    mod1_trn = rep(0, 1000),
+                    mod1_tst = rep(0, 1000),
+                    mod2_trn = rep(0, 1000),
+                    mod2_tst = rep(0, 1000),
+                    mod3_trn = rep(0, 1000),
+                    mod3_tst = rep(0, 1000),
+                    mod4_trn = rep(0, 1000),
+                    mod4_tst = rep(0, 1000),
+                    mod5_trn = rep(0, 1000),
+                    mod5_tst = rep(0, 1000),
+                    mod6_trn = rep(0, 1000),
+                    mod6_tst = rep(0, 1000),
+                    mod7_trn = rep(0, 1000),
+                    mod7_tst = rep(0, 1000),
+                    mod8_trn = rep(0, 1000),
+                    mod8_tst = rep(0, 1000),
+                    mod9_trn = rep(0, 1000),
+                    mod9_tst = rep(0, 1000)
+                    )
+```
+```{r}
+##BEGIN SIMULATION
+for (sig in sigmas) {
+  for (i in 1:1000) {
+    epsilon = rnorm(n, 0, sig)#generate error terms
+    sim2_data$y = 0 + 5*sim2_data$x1 + -4*sim2_data$x2 + 1.6*sim2_data$x3 + -1.1*sim2_data$x4 + .7*sim2_data$x5
+      +.3*sim2_data$x6 + epsilon #generate y
+    
+    train_idx = sample(1:nrow(sim2_data), 250)#create train index
+    train = sim2_data[train_idx,]#set train to be data containing all columns and only rows in train index
+    test = sim2_data[-train_idx,]#set test data to be all other data
+    
+    #start model creation
+    mod1 = lm(y ~ x1, data = train)
+    mod2 = lm(y ~ x1 + x2, data = train)
+    mod3 = lm(y ~ x1 + x2 + x3, data = train)
+    mod4 = lm(y ~ x1 + x2 + x3 + x4, data = train)
+    mod5 = lm(y ~ x1 + x2 + x3 + x4 + x5, data = train)
+    mod6 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6, data = train)#TRUE model
+    mod7 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7, data = train)
+    mod8 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8, data = train)
+    mod9 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9, data = train)
+    
+    #calculate rmse for train and test data on each model
+    if (sig == 1) {
+      rmse_sig1$mod1_trn[i] = rmse(sim2_data$y, mod1$fitted)
+      rmse_sig1$mod1_tst[i] = rmse(sim2_data$y, predict(mod1, test))
+      rmse_sig1$mod2_trn[i] = rmse(sim2_data$y, mod2$fitted)
+      rmse_sig1$mod2_tst[i] = rmse(sim2_data$y, predict(mod2, test))
+      rmse_sig1$mod3_trn[i] = rmse(sim2_data$y, mod3$fitted)
+      rmse_sig1$mod3_tst[i] = rmse(sim2_data$y, predict(mod3, test))
+      rmse_sig1$mod4_trn[i] = rmse(sim2_data$y, mod4$fitted)
+      rmse_sig1$mod4_tst[i] = rmse(sim2_data$y, predict(mod4, test))
+      rmse_sig1$mod5_trn[i] = rmse(sim2_data$y, mod5$fitted)
+      rmse_sig1$mod5_tst[i] = rmse(sim2_data$y, predict(mod5, test))
+      rmse_sig1$mod6_trn[i] = rmse(sim2_data$y, mod6$fitted)
+      rmse_sig1$mod6_tst[i] = rmse(sim2_data$y, predict(mod6, test))
+      rmse_sig1$mod7_trn[i] = rmse(sim2_data$y, mod7$fitted)
+      rmse_sig1$mod7_tst[i] = rmse(sim2_data$y, predict(mod7, test))
+      rmse_sig1$mod8_trn[i] = rmse(sim2_data$y, mod8$fitted)
+      rmse_sig1$mod8_tst[i] = rmse(sim2_data$y, predict(mod8, test))
+      rmse_sig1$mod9_trn[i] = rmse(sim2_data$y, mod9$fitted)
+      rmse_sig1$mod9_tst[i] = rmse(sim2_data$y, predict(mod9, test))
+    } 
+    if (sig == 2) {
+      rmse_sig2$mod1_trn[i] = rmse(sim2_data$y, mod1$fitted)
+      rmse_sig2$mod1_tst[i] = rmse(sim2_data$y, predict(mod1, test))
+      rmse_sig2$mod2_trn[i] = rmse(sim2_data$y, mod2$fitted)
+      rmse_sig2$mod2_tst[i] = rmse(sim2_data$y, predict(mod2, test))
+      rmse_sig2$mod3_trn[i] = rmse(sim2_data$y, mod3$fitted)
+      rmse_sig2$mod3_tst[i] = rmse(sim2_data$y, predict(mod3, test))
+      rmse_sig2$mod4_trn[i] = rmse(sim2_data$y, mod4$fitted)
+      rmse_sig2$mod4_tst[i] = rmse(sim2_data$y, predict(mod4, test))
+      rmse_sig2$mod5_trn[i] = rmse(sim2_data$y, mod5$fitted)
+      rmse_sig2$mod5_tst[i] = rmse(sim2_data$y, predict(mod5, test))
+      rmse_sig2$mod6_trn[i] = rmse(sim2_data$y, mod6$fitted)
+      rmse_sig2$mod6_tst[i] = rmse(sim2_data$y, predict(mod6, test))
+      rmse_sig2$mod7_trn[i] = rmse(sim2_data$y, mod7$fitted)
+      rmse_sig2$mod7_tst[i] = rmse(sim2_data$y, predict(mod7, test))
+      rmse_sig2$mod8_trn[i] = rmse(sim2_data$y, mod8$fitted)
+      rmse_sig2$mod8_tst[i] = rmse(sim2_data$y, predict(mod8, test))
+      rmse_sig2$mod9_trn[i] = rmse(sim2_data$y, mod9$fitted)
+      rmse_sig2$mod9_tst[i] = rmse(sim2_data$y, predict(mod9, test))
+    }
+    else {
+      rmse_sig3$mod1_trn[i] = rmse(sim2_data$y, mod1$fitted)
+      rmse_sig3$mod1_tst[i] = rmse(sim2_data$y, predict(mod1, test))
+      rmse_sig3$mod2_trn[i] = rmse(sim2_data$y, mod2$fitted)
+      rmse_sig3$mod2_tst[i] = rmse(sim2_data$y, predict(mod2, test))
+      rmse_sig3$mod3_trn[i] = rmse(sim2_data$y, mod3$fitted)
+      rmse_sig3$mod3_tst[i] = rmse(sim2_data$y, predict(mod3, test))
+      rmse_sig3$mod4_trn[i] = rmse(sim2_data$y, mod4$fitted)
+      rmse_sig3$mod4_tst[i] = rmse(sim2_data$y, predict(mod4, test))
+      rmse_sig3$mod5_trn[i] = rmse(sim2_data$y, mod5$fitted)
+      rmse_sig3$mod5_tst[i] = rmse(sim2_data$y, predict(mod5, test))
+      rmse_sig3$mod6_trn[i] = rmse(sim2_data$y, mod6$fitted)
+      rmse_sig3$mod6_tst[i] = rmse(sim2_data$y, predict(mod6, test))
+      rmse_sig3$mod7_trn[i] = rmse(sim2_data$y, mod7$fitted)
+      rmse_sig3$mod7_tst[i] = rmse(sim2_data$y, predict(mod7, test))
+      rmse_sig3$mod8_trn[i] = rmse(sim2_data$y, mod8$fitted)
+      rmse_sig3$mod8_tst[i] = rmse(sim2_data$y, predict(mod8, test))
+      rmse_sig3$mod9_trn[i] = rmse(sim2_data$y, mod9$fitted)
+      rmse_sig3$mod9_tst[i] = rmse(sim2_data$y, predict(mod9, test))
+    }
+  }
+}
+
+```
+
+
+
+
+
+
