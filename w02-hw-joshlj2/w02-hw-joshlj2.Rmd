@@ -3,9 +3,9 @@ title: "Week 2 - Homework"
 author: "STAT 420, Summer 2019, Josh Janda - joshlj2"
 date: ''
 output:
+  pdf_document: default
   html_document: 
     toc: yes
-  pdf_document: default
 urlcolor: cyan
 ---
 
