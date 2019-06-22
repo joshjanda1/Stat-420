@@ -1,5 +1,5 @@
 ---
-title: "Week 4 - Homework"
+title: "Simulation Project"
 author: "STAT 420, Summer 2019, Janda - joshlj2"
 date: ''
 output:
@@ -107,7 +107,7 @@ for (i in 1:2500) {#sigma level 3
 </br>
 **Figure 1 - $\sigma$ = 1**
 </br>
-```{r echo=FALSE}
+```{r}
 ##BEGIN PLOTTING CODE
 
 ##Sigma = 1##
@@ -185,7 +185,7 @@ curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
 </br>
 **Figure 2 - $\sigma$ = 5**
 </br>
-``` {r echo = FALSE}
+``` {r}
 ##Sigma = 5##
 
 #F Statistic Distributions#
@@ -261,7 +261,7 @@ curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
 </br>
 **Figure 3 - $\sigma$ = 10**
 </br>
-``` {r echo = FALSE}
+```{r}
 ##Sigma = 10##
 
 #F Statistic Distributions#
@@ -334,8 +334,6 @@ hist(
 x = sim1_sigma3$red_rsq
 curve(dbeta(x, 3/2, 21/2), col='blue', add=TRUE, lwd=3)
 
-
-
 ```
 </br>
 **Discussion**
@@ -377,7 +375,9 @@ So as $\sigma$ increases, the model becomes less significant and holds less expl
 </br>
 </br>
 </br>
-## Simulation 2 - Using RMSE for Selection
+
+##Simulation 2 - Using RMSE for Selection
+
 **Introduction**
 </br>
 RMSE, or root mean squared error, is a popular model selection criterion used by many. The idea behind the root mean square error is in the name. You sum up all of the squarred errors in the model, take the mean of the squared errors, and take the square root of this value. This value can be seen as the average distance each actual point is from the fitted regression line. It is used as a popular selection criterion as it successfully selects the model with the lowest average distance of actual points from the fitted regression line.
@@ -400,83 +400,89 @@ For each level of $\sigma$, I will simulate 500 values of $Y_i$ 1000 times, and 
 ```{r}
 library(readr)
 sim2_data = read_csv("study_2.csv")
-set.seed(19981128)#set seed for reproducable results
+set.seed(19981127)#set seed for reproducable results
 sigmas = c(1, 2, 4)#define sigma values for each simulation
 n = 500 #sample size
 
 rmse = function(actual, fitted) {
   sqrt(sum((actual - fitted)^2) / length((actual)))
 }
-rmse_sig1 = data.frame(
+rmse_sig1_train = data.frame(#initialize train rmse df - sigma=1
                     mod1_trn = rep(0, 1000),
-                    mod1_tst = rep(0, 1000),
                     mod2_trn = rep(0, 1000),
-                    mod2_tst = rep(0, 1000),
                     mod3_trn = rep(0, 1000),
-                    mod3_tst = rep(0, 1000),
                     mod4_trn = rep(0, 1000),
-                    mod4_tst = rep(0, 1000),
                     mod5_trn = rep(0, 1000),
-                    mod5_tst = rep(0, 1000),
                     mod6_trn = rep(0, 1000),
-                    mod6_tst = rep(0, 1000),
                     mod7_trn = rep(0, 1000),
-                    mod7_tst = rep(0, 1000),
                     mod8_trn = rep(0, 1000),
+                    mod9_trn = rep(0, 1000)
+                    )
+rmse_sig2_train = data.frame(#initialize train rmse df - sigma=2
+                    mod1_trn = rep(0, 1000),
+                    mod2_trn = rep(0, 1000),
+                    mod3_trn = rep(0, 1000),
+                    mod4_trn = rep(0, 1000),
+                    mod5_trn = rep(0, 1000),
+                    mod6_trn = rep(0, 1000),
+                    mod7_trn = rep(0, 1000),
+                    mod8_trn = rep(0, 1000),
+                    mod9_trn = rep(0, 1000)
+                    )
+rmse_sig3_train = data.frame(#initialize train rmse df - sigma=4
+                    mod1_trn = rep(0, 1000),
+                    mod2_trn = rep(0, 1000),
+                    mod3_trn = rep(0, 1000),
+                    mod4_trn = rep(0, 1000),
+                    mod5_trn = rep(0, 1000),
+                    mod6_trn = rep(0, 1000),
+                    mod7_trn = rep(0, 1000),
+                    mod8_trn = rep(0, 1000),
+                    mod9_trn = rep(0, 1000)
+                    )
+rmse_sig1_test = data.frame(
+                    mod1_tst = rep(0, 1000),
+                    mod2_tst = rep(0, 1000),
+                    mod3_tst = rep(0, 1000),
+                    mod4_tst = rep(0, 1000),
+                    mod5_tst = rep(0, 1000),
+                    mod6_tst = rep(0, 1000),
+                    mod7_tst = rep(0, 1000),
                     mod8_tst = rep(0, 1000),
-                    mod9_trn = rep(0, 1000),
                     mod9_tst = rep(0, 1000)
                     )
-rmse_sig2 = data.frame(
-                    mod1_trn = rep(0, 1000),
+rmse_sig2_test = data.frame(
                     mod1_tst = rep(0, 1000),
-                    mod2_trn = rep(0, 1000),
                     mod2_tst = rep(0, 1000),
-                    mod3_trn = rep(0, 1000),
                     mod3_tst = rep(0, 1000),
-                    mod4_trn = rep(0, 1000),
                     mod4_tst = rep(0, 1000),
-                    mod5_trn = rep(0, 1000),
                     mod5_tst = rep(0, 1000),
-                    mod6_trn = rep(0, 1000),
                     mod6_tst = rep(0, 1000),
-                    mod7_trn = rep(0, 1000),
                     mod7_tst = rep(0, 1000),
-                    mod8_trn = rep(0, 1000),
                     mod8_tst = rep(0, 1000),
-                    mod9_trn = rep(0, 1000),
                     mod9_tst = rep(0, 1000)
                     )
-rmse_sig3 = data.frame(
-                    mod1_trn = rep(0, 1000),
+rmse_sig3_test = data.frame(
                     mod1_tst = rep(0, 1000),
-                    mod2_trn = rep(0, 1000),
                     mod2_tst = rep(0, 1000),
-                    mod3_trn = rep(0, 1000),
                     mod3_tst = rep(0, 1000),
-                    mod4_trn = rep(0, 1000),
                     mod4_tst = rep(0, 1000),
-                    mod5_trn = rep(0, 1000),
                     mod5_tst = rep(0, 1000),
-                    mod6_trn = rep(0, 1000),
                     mod6_tst = rep(0, 1000),
-                    mod7_trn = rep(0, 1000),
                     mod7_tst = rep(0, 1000),
-                    mod8_trn = rep(0, 1000),
                     mod8_tst = rep(0, 1000),
-                    mod9_trn = rep(0, 1000),
                     mod9_tst = rep(0, 1000)
                     )
 ```
 ```{r}
 ##BEGIN SIMULATION
+set.seed(19981128)
 for (sig in sigmas) {
   for (i in 1:1000) {
     epsilon = rnorm(n, 0, sig)#generate error terms
-    sim2_data$y = 0 + 5*sim2_data$x1 + -4*sim2_data$x2 + 1.6*sim2_data$x3 + -1.1*sim2_data$x4 + .7*sim2_data$x5
-      +.3*sim2_data$x6 + epsilon #generate y
+    sim2_data$y = 0 + 5*sim2_data$x1 + -4*sim2_data$x2 + 1.6*sim2_data$x3 + -1.1*sim2_data$x4 + 0.7*sim2_data$x5 + 0.3*sim2_data$x6 + epsilon
     
-    train_idx = sample(1:nrow(sim2_data), 250)#create train index
+    train_idx = sample(250)#create train index
     train = sim2_data[train_idx,]#set train to be data containing all columns and only rows in train index
     test = sim2_data[-train_idx,]#set test data to be all other data
     
@@ -493,72 +499,431 @@ for (sig in sigmas) {
     
     #calculate rmse for train and test data on each model
     if (sig == 1) {
-      rmse_sig1$mod1_trn[i] = rmse(sim2_data$y, mod1$fitted)
-      rmse_sig1$mod1_tst[i] = rmse(sim2_data$y, predict(mod1, test))
-      rmse_sig1$mod2_trn[i] = rmse(sim2_data$y, mod2$fitted)
-      rmse_sig1$mod2_tst[i] = rmse(sim2_data$y, predict(mod2, test))
-      rmse_sig1$mod3_trn[i] = rmse(sim2_data$y, mod3$fitted)
-      rmse_sig1$mod3_tst[i] = rmse(sim2_data$y, predict(mod3, test))
-      rmse_sig1$mod4_trn[i] = rmse(sim2_data$y, mod4$fitted)
-      rmse_sig1$mod4_tst[i] = rmse(sim2_data$y, predict(mod4, test))
-      rmse_sig1$mod5_trn[i] = rmse(sim2_data$y, mod5$fitted)
-      rmse_sig1$mod5_tst[i] = rmse(sim2_data$y, predict(mod5, test))
-      rmse_sig1$mod6_trn[i] = rmse(sim2_data$y, mod6$fitted)
-      rmse_sig1$mod6_tst[i] = rmse(sim2_data$y, predict(mod6, test))
-      rmse_sig1$mod7_trn[i] = rmse(sim2_data$y, mod7$fitted)
-      rmse_sig1$mod7_tst[i] = rmse(sim2_data$y, predict(mod7, test))
-      rmse_sig1$mod8_trn[i] = rmse(sim2_data$y, mod8$fitted)
-      rmse_sig1$mod8_tst[i] = rmse(sim2_data$y, predict(mod8, test))
-      rmse_sig1$mod9_trn[i] = rmse(sim2_data$y, mod9$fitted)
-      rmse_sig1$mod9_tst[i] = rmse(sim2_data$y, predict(mod9, test))
-    } 
-    if (sig == 2) {
-      rmse_sig2$mod1_trn[i] = rmse(sim2_data$y, mod1$fitted)
-      rmse_sig2$mod1_tst[i] = rmse(sim2_data$y, predict(mod1, test))
-      rmse_sig2$mod2_trn[i] = rmse(sim2_data$y, mod2$fitted)
-      rmse_sig2$mod2_tst[i] = rmse(sim2_data$y, predict(mod2, test))
-      rmse_sig2$mod3_trn[i] = rmse(sim2_data$y, mod3$fitted)
-      rmse_sig2$mod3_tst[i] = rmse(sim2_data$y, predict(mod3, test))
-      rmse_sig2$mod4_trn[i] = rmse(sim2_data$y, mod4$fitted)
-      rmse_sig2$mod4_tst[i] = rmse(sim2_data$y, predict(mod4, test))
-      rmse_sig2$mod5_trn[i] = rmse(sim2_data$y, mod5$fitted)
-      rmse_sig2$mod5_tst[i] = rmse(sim2_data$y, predict(mod5, test))
-      rmse_sig2$mod6_trn[i] = rmse(sim2_data$y, mod6$fitted)
-      rmse_sig2$mod6_tst[i] = rmse(sim2_data$y, predict(mod6, test))
-      rmse_sig2$mod7_trn[i] = rmse(sim2_data$y, mod7$fitted)
-      rmse_sig2$mod7_tst[i] = rmse(sim2_data$y, predict(mod7, test))
-      rmse_sig2$mod8_trn[i] = rmse(sim2_data$y, mod8$fitted)
-      rmse_sig2$mod8_tst[i] = rmse(sim2_data$y, predict(mod8, test))
-      rmse_sig2$mod9_trn[i] = rmse(sim2_data$y, mod9$fitted)
-      rmse_sig2$mod9_tst[i] = rmse(sim2_data$y, predict(mod9, test))
-    }
-    else {
-      rmse_sig3$mod1_trn[i] = rmse(sim2_data$y, mod1$fitted)
-      rmse_sig3$mod1_tst[i] = rmse(sim2_data$y, predict(mod1, test))
-      rmse_sig3$mod2_trn[i] = rmse(sim2_data$y, mod2$fitted)
-      rmse_sig3$mod2_tst[i] = rmse(sim2_data$y, predict(mod2, test))
-      rmse_sig3$mod3_trn[i] = rmse(sim2_data$y, mod3$fitted)
-      rmse_sig3$mod3_tst[i] = rmse(sim2_data$y, predict(mod3, test))
-      rmse_sig3$mod4_trn[i] = rmse(sim2_data$y, mod4$fitted)
-      rmse_sig3$mod4_tst[i] = rmse(sim2_data$y, predict(mod4, test))
-      rmse_sig3$mod5_trn[i] = rmse(sim2_data$y, mod5$fitted)
-      rmse_sig3$mod5_tst[i] = rmse(sim2_data$y, predict(mod5, test))
-      rmse_sig3$mod6_trn[i] = rmse(sim2_data$y, mod6$fitted)
-      rmse_sig3$mod6_tst[i] = rmse(sim2_data$y, predict(mod6, test))
-      rmse_sig3$mod7_trn[i] = rmse(sim2_data$y, mod7$fitted)
-      rmse_sig3$mod7_tst[i] = rmse(sim2_data$y, predict(mod7, test))
-      rmse_sig3$mod8_trn[i] = rmse(sim2_data$y, mod8$fitted)
-      rmse_sig3$mod8_tst[i] = rmse(sim2_data$y, predict(mod8, test))
-      rmse_sig3$mod9_trn[i] = rmse(sim2_data$y, mod9$fitted)
-      rmse_sig3$mod9_tst[i] = rmse(sim2_data$y, predict(mod9, test))
+      rmse_sig1_train$mod1_trn[i] = rmse(train$y, predict(mod1, train))
+      rmse_sig1_test$mod1_tst[i] = rmse(test$y, predict(mod1, test))
+      rmse_sig1_train$mod2_trn[i] = rmse(train$y, predict(mod2, train))
+      rmse_sig1_test$mod2_tst[i] = rmse(test$y, predict(mod2, test))
+      rmse_sig1_train$mod3_trn[i] = rmse(train$y, predict(mod3, train))
+      rmse_sig1_test$mod3_tst[i] = rmse(test$y, predict(mod3, test))
+      rmse_sig1_train$mod4_trn[i] = rmse(train$y, predict(mod4, train))
+      rmse_sig1_test$mod4_tst[i] = rmse(test$y, predict(mod4, test))
+      rmse_sig1_train$mod5_trn[i] = rmse(train$y, predict(mod5, train))
+      rmse_sig1_test$mod5_tst[i] = rmse(test$y, predict(mod5, test))
+      rmse_sig1_train$mod6_trn[i] = rmse(train$y, predict(mod6, train))
+      rmse_sig1_test$mod6_tst[i] = rmse(test$y, predict(mod6, test))
+      rmse_sig1_train$mod7_trn[i] = rmse(train$y, predict(mod7, train))
+      rmse_sig1_test$mod7_tst[i] = rmse(test$y, predict(mod7, test))
+      rmse_sig1_train$mod8_trn[i] = rmse(train$y, predict(mod8, train))
+      rmse_sig1_test$mod8_tst[i] = rmse(test$y, predict(mod8, test))
+      rmse_sig1_train$mod9_trn[i] = rmse(train$y, predict(mod9, train))
+      rmse_sig1_test$mod9_tst[i] = rmse(test$y, predict(mod9, test))
+    } else if (sig == 2) {
+      rmse_sig2_train$mod1_trn[i] = rmse(train$y, predict(mod1, train))
+      rmse_sig2_test$mod1_tst[i] = rmse(test$y, predict(mod1, test))
+      rmse_sig2_train$mod2_trn[i] = rmse(train$y, predict(mod2, train))
+      rmse_sig2_test$mod2_tst[i] = rmse(test$y, predict(mod2, test))
+      rmse_sig2_train$mod3_trn[i] = rmse(train$y, predict(mod3, train))
+      rmse_sig2_test$mod3_tst[i] = rmse(test$y, predict(mod3, test))
+      rmse_sig2_train$mod4_trn[i] = rmse(train$y, predict(mod4, train))
+      rmse_sig2_test$mod4_tst[i] = rmse(test$y, predict(mod4, test))
+      rmse_sig2_train$mod5_trn[i] = rmse(train$y, predict(mod5, train))
+      rmse_sig2_test$mod5_tst[i] = rmse(test$y, predict(mod5, test))
+      rmse_sig2_train$mod6_trn[i] = rmse(train$y, predict(mod6, train))
+      rmse_sig2_test$mod6_tst[i] = rmse(test$y, predict(mod6, test))
+      rmse_sig2_train$mod7_trn[i] = rmse(train$y, predict(mod7, train))
+      rmse_sig2_test$mod7_tst[i] = rmse(test$y, predict(mod7, test))
+      rmse_sig2_train$mod8_trn[i] = rmse(train$y, predict(mod8, train))
+      rmse_sig2_test$mod8_tst[i] = rmse(test$y, predict(mod8, test))
+      rmse_sig2_train$mod9_trn[i] = rmse(train$y, predict(mod9, train))
+      rmse_sig2_test$mod9_tst[i] = rmse(test$y, predict(mod9, test))
+    } else {
+      rmse_sig3_train$mod1_trn[i] = rmse(train$y, predict(mod1, train))
+      rmse_sig3_test$mod1_tst[i] = rmse(test$y, predict(mod1, test))
+      rmse_sig3_train$mod2_trn[i] = rmse(train$y, predict(mod2, train))
+      rmse_sig3_test$mod2_tst[i] = rmse(test$y, predict(mod2, test))
+      rmse_sig3_train$mod3_trn[i] = rmse(train$y, predict(mod3, train))
+      rmse_sig3_test$mod3_tst[i] = rmse(test$y, predict(mod3, test))
+      rmse_sig3_train$mod4_trn[i] = rmse(train$y, predict(mod4, train))
+      rmse_sig3_test$mod4_tst[i] = rmse(test$y, predict(mod4, test))
+      rmse_sig3_train$mod5_trn[i] = rmse(train$y, predict(mod5, train))
+      rmse_sig3_test$mod5_tst[i] = rmse(test$y, predict(mod5, test))
+      rmse_sig3_train$mod6_trn[i] = rmse(train$y, predict(mod6, train))
+      rmse_sig3_test$mod6_tst[i] = rmse(test$y, predict(mod6, test))
+      rmse_sig3_train$mod7_trn[i] = rmse(train$y, predict(mod7, train))
+      rmse_sig3_test$mod7_tst[i] = rmse(test$y, predict(mod7, test))
+      rmse_sig3_train$mod8_trn[i] = rmse(train$y, predict(mod8, train))
+      rmse_sig3_test$mod8_tst[i] = rmse(test$y, predict(mod8, test))
+      rmse_sig3_train$mod9_trn[i] = rmse(train$y, predict(mod9, train))
+      rmse_sig3_test$mod9_tst[i] = rmse(test$y, predict(mod9, test))
     }
   }
 }
 
 ```
+</br>
+**Results**
+</br>
+```{r}
+#sigma = 1
+barplot(
+  table(factor(colnames(rmse_sig1_test)[apply(rmse_sig1_test, 1, FUN = which.min)], levels = colnames(rmse_sig1_test))),#use factor to include frequency's equal to zero
+  main = "Minimum RMSE Frequency - Sigma = 1",
+  sub = "Models",
+  ylab = "Frequency",
+  col = rainbow(9),#9 colors for 9 models
+  las = 2#makes model names vertical
+        )
+#sigma = 2
+barplot(
+  table(factor(colnames(rmse_sig2_test)[apply(rmse_sig2_test, 1, FUN = which.min)], levels = colnames(rmse_sig2_test))),
+  main = "Minimum RMSE Frequency - Sigma = 2",
+  sub = "Models",
+  ylab = "Frequency",
+  col = rainbow(9),#9 colors for 9 models
+  las = 2#makes model names vertical
+        )
+#sigma = 4
+barplot(
+  table(factor(colnames(rmse_sig3_test)[apply(rmse_sig3_test, 1, FUN = which.min)], levels = colnames(rmse_sig3_test))),
+  main = "Minimum RMSE Frequency - Sigma = 4",
+  sub = "Models",
+  ylab = "Frequency",
+  col = rainbow(9),#9 colors for 9 models
+  las = 2#makes model names vertical
+        )
+```
+</br>
+As we can see above, we are looking at the frequency of test data RMSE's for each model being the lowest out of all models in each simulation over three levels of $\sigma$. As we can see, model 6 (which is the correct model), has the highest frequency of minimum RMSE's on test data for all levels of $\sigma$. However, as $\sigma$ increases the models have more disturbance and become less predictable. This is reflected in the graphs above, as we can see that as $\sigma$ increases, the frequency of model 6 minimum RMSE's on test data decreases (but stills remains the most frequent lowest RMSE).
+</br>
+</br>
+The table below displays the frequency of each model holding the lowest RMSE on test data per simulation, per value of $\sigma$.
+</br>
+```{r echo=FALSE, warning=FALSE}
+library(knitr)
+rmse_sigma1_testtabledf = as.data.frame(table(factor(colnames(rmse_sig1_test)[apply(rmse_sig1_test, 1, FUN = which.min)], levels = colnames(rmse_sig1_test))))#drop model column
+rmse_sigma1_testtabledf = subset(rmse_sigma1_testtabledf, select=("Freq"))
+rmse_sigma2_testtabledf = as.data.frame(table(factor(colnames(rmse_sig2_test)[apply(rmse_sig2_test, 1, FUN = which.min)], levels = colnames(rmse_sig2_test))))
+rmse_sigma2_testtabledf = subset(rmse_sigma2_testtabledf, select=("Freq"))#drop model column
+rmse_sigma3_testtabledf = as.data.frame(table(factor(colnames(rmse_sig3_test)[apply(rmse_sig3_test, 1, FUN = which.min)], levels = colnames(rmse_sig3_test))))
+rmse_sigma3_testtabledf = subset(rmse_sigma3_testtabledf, select=("Freq"))#drop model column
+full_data = cbind(rmse_sigma1_testtabledf, rmse_sigma2_testtabledf, rmse_sigma3_testtabledf)
+colnames(full_data) = c("Frequency of min RMSE - Sigma = 1", "Frequency of min RMSE - Sigma = 2", "Frequency of min RMSE - Sigma = 4")
+kable_columns = c("Model 1", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9")
+kable(t(full_data), col.names = kable_columns)
+  
+```
+
+
+</br>
+The table below shows the average RMSE's for each model on each level of $\sigma$ on train and test data.
+</br>
+```{r}
+means = data.frame(
+              Sigma1_TestData = colMeans(rmse_sig1_test), 
+              Sigma1_TrainData = colMeans(rmse_sig1_train),
+              Sigma2_TestData = colMeans(rmse_sig2_test),
+              Sigma2_TrainData = colMeans(rmse_sig2_train),
+              Sigma4_TestData = colMeans(rmse_sig3_test),
+              Sigma4_TrainData = colMeans(rmse_sig3_train)
+              )
+colnames(means) = c(
+                    "Mean Test RMSE - Sigma = 1",
+                    "Mean Train RMSE - Sigma = 1",
+                    "Mean Test RMSE - Sigma = 2",
+                    "Mean Train RMSE - Sigma = 2",
+                    "Mean Test RMSE - Sigma = 4",
+                    "Mean Train RMSE - Sigma = 4"
+                    )
+kable(t(means), col.names = c("Model 1 Mean RMSE", "Model 2 Mean RMSE", "Model 3 Mean RMSE", "Model 4 Mean RMSE", "Model 5 Mean RMSE", "Model 6 Mean RMSE", "Model 7 Mean RMSE", "Model 8 Mean RMSE", "Model 9 Mean RMSE"))
+```
+
+
+</br>
+So as we can see above, for all test data model 6 consistently holds the lowest average RMSE for each level of $\sigma$. However, for train data model 9 consistently holds the lowest average RMSE for each level of $\sigma$. I believe this difference in model selection for train/test data is due to the train data being used to build the models, and the model with the most variables is being selected therefore. However, when evaluating models it is more important that the model performs well on data it has not seen before, which is the test data. RMSE chooses model 6 consistently on average for the test data for each level of $\sigma$, so this tells me that model 6 overall is the best model (which it is since it is the true model), which means that model 6 performs the best on data it has not seen before. It also performs very similiar to model 9 on data it was created with. 
+</br>
+</br>
+**Discussions**
+</br>
+</br>
+*Does RMSE always select the best model?*
+</br>
+RMSE will not always select the best model, as discussed in the introduction section of this simulation. As we can see in the graphs above model 6 is the true model however RMSE does not always choose this model as the best in each simulation. However, on average we can expect RMSE to select the correct model. This is shown in the table above. RMSE will noe always select the best model as there is randomness in our data which will effect the predicting power in each model, and sway RMSE to choose a model separate from the true model that currently fits the data better. But, stated again, we see that over 1000 simulations that average RMSE will select the best model.
+</br>
+</br>
+*How does the level of noise affect the result?*
+</br>
+The level of noise affects the results directly. As $\sigma$ increases, the model has larger disturbance terms which will lead the model to hold less predicting power, and make the model more random. When the data the model is trained on has more noise, RMSE will tend to not always choose the true model since the best model may be different due to the inflated noise. Looking at our graphs above, we can see this is the case. As the level of $\sigma$ increases, the frequency of RMSE choosing the true model (model 6), as the best model decreases. You can also see that the frequency of RMSE choosing each model starts to equal out, and becomes more uniform. Since the data becomes more random, it is harder to predict and model therefore leading to each model we created in the simulation holding relatively equal predicting power.
+</br>
+</br>
+</br>
+
+##Simulation 3 - Power
+**Introduction**
+</br>
+In this simulation, we will be looking at power in the significance of regression test. Recall from simulation 1 that the significance of regression test is testing whether any of the variables in the model are statistically significant. The null hypothesis in the significance of regression test is that none of the variables in the model are statistically significantly different than zero, and the alternative hypothesis is that at least one of the variables is statistically significantly different than zero. Power is looking specifically at the probability of rejecting the null hypothesis when the null is not true. So we are looking at the probability that the null hypothesis is rejected and the alternative hypothesis is accepted. 
+</br>
+Power can be written as this equation: 1 - $\beta$, where $\beta$ = P[Fail to reject $H_o$ | $H_1$ True]
+</br>
+
+Power can be effected in numerous ways by data, such as:
+</br>
+  - Sample size of data. The larger the sample, the higher the power you typically will get.
+</br>
+  - Signal Strength of $\beta_1$, your coefficient. If $\beta_1$ is close to zero, you will have lower power.
+  </br>
+  - Noise level ($\sigma$). The larger $\sigma$ is, the less predictable your model and lower power therefore.
+</br>
+  - Significance level ($\alpha$). If $\alpha$ is lower, our power will be lower.
+
+</br>
+For this simulation in specific, we will focus only on sample size, signal strength of $\beta_1$, and Noise level ($\sigma$). The true model that we will be simulating in this simulation will be the following:
+</br>
+$Y_i$ = $B_0$ + $B_1$$x_i$ + $\epsilon_i$ - $\epsilon_i$ ~ N(0, $\sigma^2$)
+</br>
+In order to look at how signal strength of $\beta_1$ affects power, we will simulate different levels of $\beta$. In order to look at how $\sigma$ affects power, we will simulate different levels of $\sigma$. In order to look at how sample size affects power, we will simulate with different sample sizes.
+
+</br>
+</br>
+**Methods**
+</br>
+```{r}
+#incrementer function since R does not have +=
+incrementer = function(variable, increment = 1) {
+  variable + 1
+}
+```
+
+
+```{r}
+library(data.table)
+#define variables
+beta0 = 0
+beta1s = seq(-2, 2, by = .1)#possible beta 1 values
+sigmas = c(1, 2, 4)#levels of sigma we are using in simulation
+sample_sizes = c(10, 20, 30)#sample sizes we are simulating from
+alpha = .05 #significance level alpha
+
+#how many models will be simulated per simulation? 3 for each sigma, 3 for each sample size, 41 for beta 1. This will be total number of powers we calculate.
+total_rows = length(beta1s) * length(sample_sizes) * length(sigmas)
+power_results = data.table(#each power will then correspond to a sigma, beta1, and n with this DF.
+                  sigma = rep(0, total_rows), 
+                  beta1 = rep(0, total_rows),
+                  n = rep(0, total_rows), 
+                  power = rep(0, total_rows)
+                  )
+power_results = as.vector(power_results)
+#lets define an incrementer in order to put power in accurate row.
+i = 1
+start_time = Sys.time()
+for (sig in sigmas){#simulate for all sigma levels
+  for (n in sample_sizes){#simulate for all sample sizes
+    
+    x_values = seq(0, 5, length = n)#define x values of size n for this sample size
+    #now we loop through possible beta values to create models for each one.
+    for (beta1 in beta1s){
+      #define total rejects for this beta1. We start at 0
+      total_rejects = 0
+      #for each beta1 in beta1s... simulate 1000 models.
+      for (sim in 1:1000){
+        epsilon = rnorm(n, 0, sig)#generate error terms
+        y = 0 + beta1*x_values + epsilon
+        temp_mod = lm(y ~ x_values)#build model
+        p_value = summary(temp_mod)$coefficients[2, 4]#get pvalue for significance of regression test
+        if (p_value < alpha){
+          total_rejects = incrementer(total_rejects)
+          
+        }
+      } 
+      #calculate power for this specific beta
+      power = total_rejects / 1000 #1000 sims
+      #results
+      power_results[i, "sigma"]= sig
+      power_results[i, "beta1"] = beta1
+      power_results[i, "n"] = n
+      power_results[i, "power"] = power
+      
+      #increase incrementer for row number
+      i = incrementer(i)
+    }
+  }
+}
+end_time = Sys.time()
+cat("took", end_time - start_time, "minutes to complete")
+```
+```{r}
+#using C++
 
 
 
 
+```
+
+
+```{r}
+##BEGIN PLOTTING
+#ggplot2 is easier to use to plot curves. I will use it for plotting this simulation
+library(ggplot2)
+#clean data
+power1 = power_results[which(power_results$sigma == 1),]
+power1_n10 = power1[which(power1$n == 10),]
+power1_n20 = power1[which(power1$n == 20),c("n", "power")]
+power1_n30 = power1[which(power1$n == 30),c("n", "power")]
+power1_full = cbind(power1_n10, power1_n20, power1_n30)
+colnames(power1_full) = c("sigma", "beta1", "n10", "power_n10", "n20", "power_n20", "n30", "power_n30" )
+
+power2 = power_results[which(power_results$sigma == 2),]
+power2_n10 = power2[which(power2$n == 10),]
+power2_n20 = power2[which(power2$n == 20),c("n", "power")]
+power2_n30 = power2[which(power2$n == 30),c("n", "power")]
+power2_full = cbind(power2_n10, power2_n20, power2_n30)
+colnames(power2_full) = c("sigma", "beta1", "n10", "power_n10", "n20", "power_n20", "n30", "power_n30" )
+
+power4 = power_results[which(power_results$sigma == 4),]
+power4_n10 = power4[which(power4$n == 10),]
+power4_n20 = power4[which(power4$n == 20),c("n", "power")]
+power4_n30 = power4[which(power4$n == 30),c("n", "power")]
+power4_full = cbind(power4_n10, power4_n20, power4_n30)
+colnames(power4_full) = c("sigma", "beta1", "n10", "power_n10", "n20", "power_n20", "n30", "power_n30" )
+
+ggplot(power1_full, aes(beta1)) + 
+  geom_line(aes(y = power_n10, color = "power_n10"), size=1) + 
+  geom_line(aes(y = power_n20, color = "power_n20"), size=1) +
+  geom_line(aes(y = power_n30, color = "power_n30"), size=1) +
+  xlab("Possible Beta 1 Values") +
+  ylab("Power") +
+  ggtitle("Power vs. Beta 1 Values - Different Sample Sizes - Sigma = 1") +
+  scale_color_manual(
+                      values = c("power_n10" = "blue", "power_n20" = "green", "power_n30" = "red"),
+                      labels = c("n = 10", "n = 20", "n = 30")
+                    ) +
+  theme(plot.title = element_text(hjust = .5))
+
+ggplot(power2_full, aes(beta1)) + 
+  geom_line(aes(y = power_n10, color = "power_n10"), size=1) + 
+  geom_line(aes(y = power_n20, color = "power_n20"), size=1) +
+  geom_line(aes(y = power_n30, color = "power_n30"), size=1) +
+  xlab("Possible Beta 1 Values") +
+  ylab("Power") +
+  ggtitle("Power vs. Beta 1 Values - Different Sample Sizes - Sigma = 2") +
+  scale_color_manual(
+                      values = c("power_n10" = "blue", "power_n20" = "green", "power_n30" = "red"),
+                      labels = c("n = 10", "n = 20", "n = 30")
+                    ) +
+  theme(plot.title = element_text(hjust = .5))
+
+ggplot(power4_full, aes(beta1)) + 
+  geom_line(aes(y = power_n10, color = "power_n10"), size=1) + 
+  geom_line(aes(y = power_n20, color = "power_n20"), size=1) +
+  geom_line(aes(y = power_n30, color = "power_n30"), size=1) +
+  xlab("Possible Beta 1 Values") +
+  ylab("Power") +
+  ggtitle("Power vs. Beta 1 Values - Different Sample Sizes - Sigma = 4") +
+  scale_color_manual(
+                      values = c("power_n10" = "blue", "power_n20" = "green", "power_n30" = "red"),
+                      labels = c("n = 10", "n = 20", "n = 30")
+                    ) +
+  theme(plot.title = element_text(hjust = .5))
+
+ggplot(power1, aes(x = factor(n), y = power)) +
+  stat_summary(fun.y = "mean", geom="bar", fill = rainbow(3)) + 
+  xlab("Sample Sizes of Simulation - n = 10, 20, 30") +
+  ylab("Average Power") +
+  ggtitle("Average Power vs. Sample Size - Sigma = 1") +
+  theme(plot.title = element_text(hjust = .5)) +
+  labs(color = "") +
+  scale_x_discrete(breaks = c("10", "20", "30"),
+                   labels = c("n = 10", "n = 20", "n = 30")
+                   ) +
+  ylim(0, 1)
+
+ggplot(power2, aes(x = factor(n), y = power)) +
+  stat_summary(fun.y = "mean", geom="bar", fill = rainbow(3)) + 
+  xlab("Sample Sizes of Simulation - n = 10, 20, 30") +
+  ylab("Average Power") +
+  ggtitle("Average Power vs. Sample Size - Sigma = 2") +
+  theme(plot.title = element_text(hjust = .5)) +
+  labs(color = "") +
+  scale_x_discrete(breaks = c("10", "20", "30"),
+                   labels = c("n = 10", "n = 20", "n = 30")
+                   ) +
+  ylim(0, 1)
+
+ggplot(power4, aes(x = factor(n), y = power)) +
+  stat_summary(fun.y = "mean", geom="bar", fill = rainbow(3)) + 
+  xlab("Sample Sizes of Simulation - n = 10, 20, 30") +
+  ylab("Average Power") +
+  ggtitle("Average Power vs. Sample Size - Sigma = 4") +
+  theme(plot.title = element_text(hjust = .5)) +
+  labs(color = "") +
+  scale_x_discrete(breaks = c("10", "20", "30"),
+                   labels = c("n = 10", "n = 20", "n = 30")
+                   ) +
+  ylim(0, 1)
+
+```
+</br>
+</br>
+**Discussion**
+</br>
+</br>
+  **How does n affect power?**
+  </br>
+  As we can see from the plots above, n very well does affect power. We can see that essentially as sample size (n)   increases, the power curves are more strict and have less opportunity of having a low probability of rejecting a   null hypothesis that is not true. This is important as we want to be sure that we have a high power in our models   and correctly be rejecting untrue null hypothesis. So as sample size increases, we can be more confident that our   our power is accurate and we are correctly rejecting null hypothesis's that are untrue. In the case of our focus,
+  we will be correctly rejecting null hypothesis's of significance of regression tests more often as sample size
+  increases.
+  </br>
+  </br>
+  If we look at the histograms above now, we can clearly see that for each level of $\sigma$, as sample size         increases from n = 10 to n = 20 to n = 30, the average power increases in each group. So, from these histograms    it is obvious how sample size can affect power, and shows that as sample size increases average power in each
+  simulation will increase (so overall power in each simulation will be higher with a larger sample size).
+  </br>
+  </br>
+  **How does $\beta_1$ affect power?**
+  </br>
+  Looking at the plots above of the curves, we can see that $\beta_1$ does indeed affect power. This is due to the
+  simulation testing the null hypothesis of $\beta_1$ = 0. In the power curve plots, we can see that as $\beta_1$
+  gets closer to zero, our power curve drops off to zero which is the function minimum and then as $beta_1$ gets 
+  farther from zero, the curve goes back up towards it's maximum. I am using minimum and maximum as the power curve
+  function is clearly quadratic and parabola shaped.
+  </br>
+  </br>
+  Since we are testing if $\beta_1$ = 0 as our null hypothesis, this behavior of the power curve seems normal to
+  me. Since power is the probability of rejecting the null hypothesis when the null is not true, we would expect
+  to have a power of zero when $\beta_1$ is equal to zero, and a decreasing power when $\beta_1$ is approaching
+  zero. This is the behavior we see in the plots. So we can clearly state that $\beta_1$ has an affect on power.
+  </br>
+  </br>
+  **How does $\sigma$ affect power?**
+  </br>
+  Looking at the six plots above, we can see that $\sigma$ clearly has an affect on power. In the power curve
+  plots, one for each level of $\sigma$, we can see that as $\sigma$ increases the curves begin to "flatten" out,
+  and power heavily decreases. This is due to the $\sigma$ increasing the disturbance in the model, and decreasing
+  the models predictive power as well as explanatory power. Since there is more noise in the model, this will have
+  an effect on the coefficient of $\beta_1$, and therefore affect our conclusion in the significance of regression
+  test. As $\sigma$ increases, the true coefficient of $\beta_1$ may be zero, but the error term may change the
+  estimated coefficient heavily and sway our results.
+  </br>
+  </br>
+  If we look at the histograms above, we can see that as $\sigma$ increases, the average power for each sample size
+  of n=10, 20, and 30 decreases. Once again, this is due to $\sigma$ increasing the noise in the model. So I can 
+  confidently say that $\sigma$ has an affect on power, and this is shown above in the plots. While the null
+  hypothesis may truly be false and therefore should be rejected, $\sigma$ can sway our conclusion and therefore 
+  decrease power.
+  </br>
+  </br>
+  **Is 1000 simulations sufficient?**
+  I believe that 1000 simulations is sufficient for showing how sample size, signal strength of $\beta_1$, and       $\sigma$ affect power. After running the code block above, we have simulated 41*1000*3*3 = 369,000 models
+  simulated in total. For the total number of powers we have simulated, it will be 369 (one per 1000 models).
+  After looking at the power curves as well as the histograms above, we can easily see how $\sigma$, $\beta_1$, and
+  sample size affect power. Performing more simulations would only help further prove that power is affected by
+  these three things, but it is not necessary in order to obtain a visual of it. You must also think of computing
+  power when doing a larger simulation, since this simulation is already very large. So overall, 1000 simulations
+  is definitely sufficient to see how power is affected by these three variables. 
+  </br>
+  </br>
+  This is the end of my project. Thanks for reading!
+  </br>
+  [Check out my Github!](https://github.com/joshjanda1/Stat-420)
+  
+  
 
 
